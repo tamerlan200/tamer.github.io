@@ -1,46 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<style>
-body {
- font-family: Arial, sans-serif;
- margin: 0;
- padding: 0;
- text-align: center;
- background: #f4f4f4;
- }
- .tabs {
- display: flex;
- justify-content: space-around;
- background: #000000;
- padding: 10px;
- }
- .tab {
- padding: 10px 20px;
- color: white;
- cursor: pointer;
- }
- .tab:hover {
- background: #0056b3;
- }
- .content {
- display: none;
- padding: 20px;
- background: white;
- margin: 10px;
- border-radius: 8px;
- }
- .active {
- display: block;
- }
-</style>
-<body>
-    <div class="tabs">
+    <title>Умный Дом</title>
+    <style>
+        @font-face {
+        font-family: 'SevenSegment';
+        src:
+       url('https://fonts.cdnfonts.com/s/10693/DSDIGI.woff') format('woff');
+        }
+        body {
+        font-family: 'Inter', sans-serif;
+        text-align: center;
+        padding: 20px;
+        background: #121212;
+        color: #ffffff;
+        }
+        .tabs {
+        display: flex;
+        justify-content: space-around;
+        background: #1e1e1e;
+        padding: 10px;
+        border-radius: 10px;
+        }
+        .tab {
+        padding: 10px 20px;
+        color: white;
+        cursor: pointer;
+        }
+        .tab:hover {
+        background: #00a3cc;
+        }
+        .content {
+        display: none;
+        padding: 20px;
+        background: #1e1e1e;
+        margin-top: 10px;
+        border-radius: 10px;
+        }
+        .active {
+        display: block;
+        }
+        .container {
+        max-width: 400px;
+        margin: auto;
+        padding: 20px;
+        background: #1e1e1e;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+        font-size: 1.5em;
+        color: #00d4ff;
+        }
+        input, button {
+        width: 90%;
+        padding: 10px;
+        margin: 10px 0;
+        border: none;
+        border-radius: 5px;
+        font-size: 1em;
+        }
+        input {
+        background: #333;
+        color: #fff;
+        }
+        button {
+        background: #00d4ff;
+        color: #000;
+        cursor: pointer;
+        }
+        button:hover {
+        background: #00a3cc;
+        }
+        .weather-card {
+        margin-top: 20px;
+        padding: 15px;
+        background: #292929;
+        border-radius: 8px;
+        }
+        .seven-segment {
+        font-family: 'SevenSegment', sans-serif;
+        font-size: 2em;
+        color: red;
+        background-color: black;
+        padding: 5px 10px;
+        border-radius: 5px;
+        display: inline-block;
+        }
+        </style>
+       </head>
+       <body>
+        <div class="tabs">
         <div class="tab" onclick="showTab('home')">Главная</div>
         <div class="tab" onclick="showTab('lighting')">Освещение</div>
         <div class="tab" onclick="showTab('climate')">Климат</div>
@@ -48,9 +100,14 @@ body {
         <div class="tab" onclick="showTab('settings')">Настройки</div>
         </div>
        
-        <div id="home" class="content active">
-        <h2>Главная</h2>
-        <p>Общее состояние системы.</p>
+        <div id="home" class="content active" onload="getWeather('Щучинск')">
+        <div class="container">
+       <body onload="getWeather('Щучинск')">
+       <div id="weather" class="weather-card"></div>
+        <input type="text" id="city" placeholder="Введите город" value="Щучинск">
+        <button onclick="getWeather()">Изменить город</button>
+       
+        </div>
         </div>
         <div id="lighting" class="content">
         <h2>Освещение</h2>
@@ -68,13 +125,37 @@ body {
         <h2>Настройки</h2>
         <p>Wi-Fi, параметры системы.</p>
         </div>
-
+       
         <script>
-            function showTab(tabId) {
-            document.querySelectorAll('.content').forEach(el =>
-           el.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            }
-            </script>
+        function showTab(tabId) {
+        document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        }
+        async function getWeather(defaultCity) {
+        const apiKey = '988c4195973b767c894ce310554e5bae';
+        const cityInput = document.getElementById('city');
+        const city = defaultCity || cityInput.value;
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=ru`;
+       
+        try {
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data.cod === 200) {
+        document.getElementById('weather').innerHTML = `
+        <p>В городе <strong>${data.name}, ${data.sys.country}</strong></p>
+        <p>${data.weather[0].description}</p>
+        <p> Температура: <span class='seven-segment'>${data.main.temp}°C</span></p>
+        <p> Ощущается как: <span class='seven-segment'>${data.main.feels_like}°C</span></p>
+        <p> Влажность: ${data.main.humidity}%</p>
+        <p> Ветер: ${data.wind.speed} м/с</p>
+        `;
+        } else {
+        document.getElementById('weather').innerHTML = `<p>Ошибка: ${data.message}</p>`;
+        }
+        } catch (error) {
+        document.getElementById('weather').innerHTML = '<p>Не удалось получить данные.</p>';
+        }
+        }
+        </script>
 </body>
 </html>
