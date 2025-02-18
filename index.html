@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<style>
+body {
+ font-family: Arial, sans-serif;
+ margin: 0;
+ padding: 0;
+ text-align: center;
+ background: #f4f4f4;
+ }
+ .tabs {
+ display: flex;
+ justify-content: space-around;
+ background: #000000;
+ padding: 10px;
+ }
+ .tab {
+ padding: 10px 20px;
+ color: white;
+ cursor: pointer;
+ }
+ .tab:hover {
+ background: #0056b3;
+ }
+ .content {
+ display: none;
+ padding: 20px;
+ background: white;
+ margin: 10px;
+ border-radius: 8px;
+ }
+ .active {
+ display: block;
+ }
+</style>
+<body>
+    <div class="tabs">
+        <div class="tab" onclick="showTab('home')">Главная</div>
+        <div class="tab" onclick="showTab('lighting')">Освещение</div>
+        <div class="tab" onclick="showTab('climate')">Климат</div>
+        <div class="tab" onclick="showTab('security')">Безопасность</div>
+        <div class="tab" onclick="showTab('settings')">Настройки</div>
+        </div>
+       
+        <div id="home" class="content active">
+        <h2>Главная</h2>
+        <p>Общее состояние системы.</p>
+        </div>
+        <div id="lighting" class="content">
+        <h2>Освещение</h2>
+        <p>Управление светом в доме.</p>
+        </div>
+        <div id="climate" class="content">
+        <h2>Климат</h2>
+        <p>Температура, влажность.</p>
+        </div>
+        <div id="security" class="content">
+        <h2>Безопасность</h2>
+        <p>Контроль камер, замков.</p>
+        </div>
+        <div id="settings" class="content">
+        <h2>Настройки</h2>
+        <p>Wi-Fi, параметры системы.</p>
+        </div>
+
+        <script>
+            function showTab(tabId) {
+            document.querySelectorAll('.content').forEach(el =>
+           el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            }
+            </script>
+</body>
+</html>
